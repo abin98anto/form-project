@@ -1,0 +1,5 @@
+{
+  "name": "Awesome App",
+  "description": "A responsive React application with user authentication flow, Zod validation, and Tailwind CSS styling.",
+  "requestFramePermissions": []
+}
