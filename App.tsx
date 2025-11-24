@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { Header } from './components/Header';
 import { HomeView } from './components/HomeView';
 import { SignupView } from './components/SignupView';
@@ -23,12 +23,6 @@ function App() {
   const confirmLogout = () => {
     setUserData(null);
     setIsLogoutModalOpen(false);
-    // Usually redirect to home after logout, but if we are already there or elsewhere
-    // window.location.href = '/' or use navigate hook if component was inside router
-    // Since App is top level, we can't use useNavigate here easily without a wrapper.
-    // However, the modal will close and the Header will update. 
-    // If the user was on a protected route, they would see the fallback.
-    // For now, let's just clear state.
   };
 
   const cancelLogout = () => {
@@ -63,7 +57,7 @@ function App() {
                   <div className="text-center">
                       <h2 className="text-xl font-bold mb-2">Session Expired</h2>
                       <p className="mb-4 text-slate-600">Please sign up or log in again.</p>
-                      <a href="#/" className="text-primary-600 hover:underline">Return Home</a>
+                      <Link to="/" className="text-primary-600 hover:underline">Return Home</Link>
                   </div>
                 </div>
               )
