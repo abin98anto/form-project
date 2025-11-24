@@ -232,16 +232,6 @@ export const SignupView: React.FC<SignupViewProps> = ({ onSignupSuccess, onCance
                     error={errors.state} 
                    />
                 </div>
-                <div className="sm:col-span-2">
-                   <InputField 
-                    label="Zip Code" 
-                    name="zip" 
-                    placeholder="12345" 
-                    value={formData.zip} 
-                    onChange={handleChange} 
-                    error={errors.zip} 
-                   />
-                </div>
               </div>
             </div>
 
@@ -293,34 +283,6 @@ export const SignupView: React.FC<SignupViewProps> = ({ onSignupSuccess, onCance
             <div>
               <h3 className="text-lg font-semibold leading-7 text-slate-900 border-b pb-2 mb-4">Service Configuration</h3>
               <div className="space-y-6">
-
-                {/* Radio Technology */}
-                <div id="radioTechnology-group">
-                  <label className="text-sm font-medium leading-6 text-slate-900">Radio Technology</label>
-                  <div className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    {['2G', '4G-LTE', 'CAT-M'].map((tech) => (
-                      <div key={tech} className={`relative flex items-start p-3 border rounded-lg cursor-pointer transition-all ${formData.radioTechnology === tech ? 'border-primary-600 bg-primary-50' : 'border-slate-300 hover:border-primary-300'}`}>
-                        <div className="flex h-6 items-center">
-                          <input
-                            id={`tech-${tech}`}
-                            name="radioTechnology"
-                            type="radio"
-                            value={tech}
-                            checked={formData.radioTechnology === tech}
-                            onChange={handleChange}
-                            className="h-4 w-4 border-slate-300 text-primary-600 focus:ring-primary-600"
-                          />
-                        </div>
-                        <div className="ml-3 text-sm leading-6">
-                          <label htmlFor={`tech-${tech}`} className="font-medium text-slate-900 cursor-pointer">
-                            {tech}
-                          </label>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  {errors.radioTechnology && <p className="mt-2 text-sm text-red-600">{errors.radioTechnology}</p>}
-                </div>
 
                 {/* Data Usage */}
                 <div id="dataUsage-group">
