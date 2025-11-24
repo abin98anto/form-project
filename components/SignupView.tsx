@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { SignupSchema, SignupFormData, User } from '../types';
 import { Button } from './Button';
 import { Loader2, AlertCircle, CreditCard } from 'lucide-react';
 
 interface SignupViewProps {
   onSignupSuccess: (user: User) => void;
-  onCancel: () => void;
 }
 
 // Extract InputField outside to prevent re-mounting on every render (fixes focus loss)
@@ -56,16 +56,13 @@ const InputField = ({
   );
 };
 
-export const SignupView: React.FC<SignupViewProps> = ({ onSignupSuccess, onCancel }) => {
+export const SignupView: React.FC<SignupViewProps> = ({ onSignupSuccess }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<Partial<SignupFormData>>({
     email: '',
     firstName: '',
     lastName: '',
-    streetAddress: '',
-    officeSuite: '',
-    city: '',
-    state: '',
-    zip: '',
+    // Address fields removed
     paymentCard: '',
     expiryMMYY: '',
     cvv: '',
@@ -81,7 +78,7 @@ export const SignupView: React.FC<SignupViewProps> = ({ onSignupSuccess, onCance
   const validateField = (name: keyof SignupFormData, value: any) => {
     try {
       // Handle optional fields that might be empty strings in formData
-      if ((name === 'officeSuite' || name === 'promoCode') && value === '') {
+      if (name === 'promoCode' && value === '') {
          setErrors(prev => ({ ...prev, [name]: undefined }));
          return;
       }
@@ -151,6 +148,9 @@ export const SignupView: React.FC<SignupViewProps> = ({ onSignupSuccess, onCance
     };
 
     onSignupSuccess(newUser);
+    // Navigation to success page is now handled in App.tsx or here?
+    // Let's handle it here to keep App.tsx clean, but App handles auth state
+    navigate('/success');
   };
 
   return (
@@ -196,53 +196,7 @@ export const SignupView: React.FC<SignupViewProps> = ({ onSignupSuccess, onCance
               </div>
             </div>
 
-            {/* Address Information */}
-            <div>
-              <h3 className="text-lg font-semibold leading-7 text-slate-900 border-b pb-2 mb-4">Address</h3>
-              <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-6">
-                <InputField 
-                  label="Street Address" 
-                  name="streetAddress" 
-                  value={formData.streetAddress} 
-                  onChange={handleChange} 
-                  error={errors.streetAddress} 
-                />
-                <InputField 
-                  label="Office Suite (Optional)" 
-                  name="officeSuite" 
-                  value={formData.officeSuite} 
-                  onChange={handleChange} 
-                  error={errors.officeSuite} 
-                />
-                <div className="sm:col-span-2">
-                   <InputField 
-                    label="City" 
-                    name="city" 
-                    value={formData.city} 
-                    onChange={handleChange} 
-                    error={errors.city} 
-                   />
-                </div>
-                <div className="sm:col-span-2">
-                   <InputField 
-                    label="State" 
-                    name="state" 
-                    value={formData.state} 
-                    onChange={handleChange} 
-                    error={errors.state} 
-                   />
-                </div>
-                <div className="sm:col-span-2">
-                   <InputField 
-                    label="Zip Code" 
-                    name="zip" 
-                    value={formData.zip} 
-                    onChange={handleChange} 
-                    error={errors.zip} 
-                   />
-                </div>
-              </div>
-            </div>
+            {/* Address Information REMOVED */}
 
             {/* Payment Information */}
             <div>
@@ -374,23 +328,33 @@ export const SignupView: React.FC<SignupViewProps> = ({ onSignupSuccess, onCance
 
             {/* Submit Section */}
             <div className="pt-4 border-t border-slate-200">
-              <Button 
-                type="submit" 
-                fullWidth 
-                variant="primary" 
-                size="lg"
-                disabled={isSubmitting}
-                className="flex items-center justify-center gap-2"
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="animate-spin w-5 h-5" />
-                    Processing Signup...
-                  </>
-                ) : (
-                  'Create Account'
-                )}
-              </Button>
+              <div className="flex gap-4">
+                 <Button 
+                    type="button" 
+                    variant="secondary"
+                    onClick={() => navigate('/')}
+                    className="w-1/3"
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    type="submit" 
+                    fullWidth 
+                    variant="primary" 
+                    size="lg"
+                    disabled={isSubmitting}
+                    className="flex-1 flex items-center justify-center gap-2"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="animate-spin w-5 h-5" />
+                        Processing...
+                      </>
+                    ) : (
+                      'Create Account'
+                    )}
+                  </Button>
+              </div>
             </div>
           </form>
         </div>

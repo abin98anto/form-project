@@ -1,12 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from './Button';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
 
-interface HomeViewProps {
-  onSignupClick: () => void;
-}
+export const HomeView: React.FC = () => {
+  const navigate = useNavigate();
 
-export const HomeView: React.FC<HomeViewProps> = ({ onSignupClick }) => {
   return (
     <main className="flex-1 bg-white">
       {/* Hero Section */}
@@ -21,7 +20,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onSignupClick }) => {
               Experience the future of web development with our state-of-the-art platform. Fast, secure, and incredibly user-friendly. Join thousands of happy users today.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
-              <Button onClick={onSignupClick} size="lg" className="rounded-full px-8 shadow-lg shadow-primary-500/20">
+              <Button onClick={() => navigate('/signup')} size="lg" className="rounded-full px-8 shadow-lg shadow-primary-500/20">
                 Get started <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </div>

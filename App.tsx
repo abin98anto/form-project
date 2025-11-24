@@ -1,26 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Header } from './components/Header';
 import { HomeView } from './components/HomeView';
 import { SignupView } from './components/SignupView';
 import { SuccessView } from './components/SuccessView';
+import { NotFoundView } from './components/NotFoundView';
 import { LogoutModal } from './components/LogoutModal';
-import { Page, User } from './types';
+import { User } from './types';
 
 function App() {
-  const [page, setPage] = useState<Page>('home');
   const [userData, setUserData] = useState<User | null>(null);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
-  // Routing guard: prevent access to signup page if user is already logged in
-  useEffect(() => {
-    if (userData && page === 'signup') {
-      setPage('success');
-    }
-  }, [userData, page]);
-
   const handleSignupSuccess = (user: User) => {
     setUserData(user);
-    setPage('success');
   };
 
   const initiateLogout = () => {
@@ -29,8 +22,13 @@ function App() {
 
   const confirmLogout = () => {
     setUserData(null);
-    setPage('home');
     setIsLogoutModalOpen(false);
+    // Usually redirect to home after logout, but if we are already there or elsewhere
+    // window.location.href = '/' or use navigate hook if component was inside router
+    // Since App is top level, we can't use useNavigate here easily without a wrapper.
+    // However, the modal will close and the Header will update. 
+    // If the user was on a protected route, they would see the fallback.
+    // For now, let's just clear state.
   };
 
   const cancelLogout = () => {
@@ -38,53 +36,50 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      <Header 
-        currentPage={page} 
-        userData={userData}
-        onNavigate={setPage}
-        onLogout={initiateLogout}
-      />
-
-      {page === 'home' && (
-        <HomeView onSignupClick={() => setPage('signup')} />
-      )}
-
-      {page === 'signup' && !userData && (
-        <SignupView 
-          onSignupSuccess={handleSignupSuccess}
-          onCancel={() => setPage('home')}
+    <HashRouter>
+      <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+        <Header 
+          userData={userData}
+          onLogout={initiateLogout}
         />
-      )}
 
-      {page === 'success' && userData && (
-        <SuccessView 
-          user={userData} 
-          onGoHome={() => setPage('home')}
+        <Routes>
+          <Route path="/" element={<HomeView />} />
+          
+          <Route 
+            path="/signup" 
+            element={
+              userData ? <Navigate to="/success" replace /> : <SignupView onSignupSuccess={handleSignupSuccess} />
+            } 
+          />
+          
+          <Route 
+            path="/success" 
+            element={
+              userData ? (
+                <SuccessView user={userData} />
+              ) : (
+                <div className="flex-1 flex items-center justify-center p-4">
+                  <div className="text-center">
+                      <h2 className="text-xl font-bold mb-2">Session Expired</h2>
+                      <p className="mb-4 text-slate-600">Please sign up or log in again.</p>
+                      <a href="#/" className="text-primary-600 hover:underline">Return Home</a>
+                  </div>
+                </div>
+              )
+            } 
+          />
+
+          <Route path="*" element={<NotFoundView />} />
+        </Routes>
+
+        <LogoutModal 
+          isOpen={isLogoutModalOpen}
+          onClose={cancelLogout}
+          onConfirm={confirmLogout}
         />
-      )}
-      
-      {/* Fallback if on success page but no user data (e.g. refresh or manual state change) */}
-      {page === 'success' && !userData && (
-        <div className="flex-1 flex items-center justify-center p-4">
-            <div className="text-center">
-                <h2 className="text-xl font-bold mb-2">Session Expired</h2>
-                <button 
-                  onClick={() => setPage('home')}
-                  className="text-primary-600 hover:underline"
-                >
-                  Return Home
-                </button>
-            </div>
-        </div>
-      )}
-
-      <LogoutModal 
-        isOpen={isLogoutModalOpen}
-        onClose={cancelLogout}
-        onConfirm={confirmLogout}
-      />
-    </div>
+      </div>
+    </HashRouter>
   );
 }
 

@@ -1,14 +1,16 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { User } from '../types';
 import { PartyPopper, CheckCircle } from 'lucide-react';
 import { Button } from './Button';
 
 interface SuccessViewProps {
   user: User;
-  onGoHome: () => void;
 }
 
-export const SuccessView: React.FC<SuccessViewProps> = ({ user, onGoHome }) => {
+export const SuccessView: React.FC<SuccessViewProps> = ({ user }) => {
+  const navigate = useNavigate();
+
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] bg-slate-50 px-4 text-center">
       <div className="bg-white p-12 rounded-2xl shadow-xl max-w-lg w-full border border-slate-100">
@@ -30,7 +32,7 @@ export const SuccessView: React.FC<SuccessViewProps> = ({ user, onGoHome }) => {
           </p>
         </div>
 
-        <Button onClick={onGoHome} variant="outline" fullWidth>
+        <Button onClick={() => navigate('/')} variant="outline" fullWidth>
           Go to Dashboard
         </Button>
       </div>
