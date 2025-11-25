@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SignupSchema, SignupFormData, User } from '../types';
 import { Button } from './Button';
-import { Loader2, AlertCircle, CreditCard } from 'lucide-react';
+import { Loader2, AlertCircle } from 'lucide-react';
 
 interface SignupViewProps {
   onSignupSuccess: (user: User) => void;
@@ -63,11 +63,9 @@ export const SignupView: React.FC<SignupViewProps> = ({ onSignupSuccess }) => {
     firstName: '',
     lastName: '',
     // Address fields removed
-    paymentCard: '',
-    expiryMMYY: '',
-    cvv: '',
+    // Payment fields removed
     promoCode: '',
-    radioTechnology: undefined,
+    // Radio Technology removed
     dataUsage: undefined,
     annoyingOffers: false,
   });
@@ -196,84 +194,10 @@ export const SignupView: React.FC<SignupViewProps> = ({ onSignupSuccess }) => {
               </div>
             </div>
 
-            {/* Address Information REMOVED */}
-
-            {/* Payment Information */}
-            <div>
-              <h3 className="text-lg font-semibold leading-7 text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
-                <CreditCard className="w-5 h-5" />
-                Payment Details
-              </h3>
-              <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-6">
-                <InputField 
-                  label="Card Number" 
-                  name="paymentCard" 
-                  placeholder="0000 0000 0000 0000"
-                  value={formData.paymentCard} 
-                  onChange={handleChange} 
-                  error={errors.paymentCard} 
-                />
-                <InputField 
-                  label="Expiration (MM/YY)" 
-                  name="expiryMMYY" 
-                  width="third"
-                  placeholder="MM/YY"
-                  value={formData.expiryMMYY} 
-                  onChange={handleChange} 
-                  error={errors.expiryMMYY} 
-                />
-                <InputField 
-                  label="CVV" 
-                  name="cvv" 
-                  width="third"
-                  placeholder="123"
-                  value={formData.cvv} 
-                  onChange={handleChange} 
-                  error={errors.cvv} 
-                />
-                <InputField 
-                  label="Promo Code (Optional)" 
-                  name="promoCode" 
-                  width="third"
-                  value={formData.promoCode} 
-                  onChange={handleChange} 
-                  error={errors.promoCode} 
-                />
-              </div>
-            </div>
-
             {/* Service Configuration */}
             <div>
               <h3 className="text-lg font-semibold leading-7 text-slate-900 border-b pb-2 mb-4">Service Configuration</h3>
               <div className="space-y-6">
-
-                {/* Radio Technology */}
-                <div id="radioTechnology-group">
-                  <label className="text-sm font-medium leading-6 text-slate-900">Radio Technology</label>
-                  <div className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    {['2G', '4G-LTE', 'CAT-M'].map((tech) => (
-                      <div key={tech} className={`relative flex items-start p-3 border rounded-lg cursor-pointer transition-all ${formData.radioTechnology === tech ? 'border-primary-600 bg-primary-50' : 'border-slate-300 hover:border-primary-300'}`}>
-                        <div className="flex h-6 items-center">
-                          <input
-                            id={`tech-${tech}`}
-                            name="radioTechnology"
-                            type="radio"
-                            value={tech}
-                            checked={formData.radioTechnology === tech}
-                            onChange={handleChange}
-                            className="h-4 w-4 border-slate-300 text-primary-600 focus:ring-primary-600"
-                          />
-                        </div>
-                        <div className="ml-3 text-sm leading-6">
-                          <label htmlFor={`tech-${tech}`} className="font-medium text-slate-900 cursor-pointer">
-                            {tech}
-                          </label>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  {errors.radioTechnology && <p className="mt-2 text-sm text-red-600">{errors.radioTechnology}</p>}
-                </div>
 
                 {/* Data Usage */}
                 <div id="dataUsage-group">
@@ -302,6 +226,15 @@ export const SignupView: React.FC<SignupViewProps> = ({ onSignupSuccess }) => {
                   </div>
                   {errors.dataUsage && <p className="mt-2 text-sm text-red-600">{errors.dataUsage}</p>}
                 </div>
+
+                <InputField 
+                  label="Promo Code (Optional)" 
+                  name="promoCode" 
+                  width="full"
+                  value={formData.promoCode} 
+                  onChange={handleChange} 
+                  error={errors.promoCode} 
+                />
 
                 {/* Annoying Offers */}
                 <div className="relative flex gap-x-3">
